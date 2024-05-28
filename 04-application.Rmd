@@ -1,0 +1,491 @@
+# National context
+
+##	National circumstances
+
+__Environment:__ The land area of Lesotho is dominated by rugged topography of the Maloti and Drakensberg mountain ranges. The land area comprises of 10.1 percent of arable land, 65.9 percent of permanent pasture, 1.63 percent tree cover, and 22 percent being other (bare rock and build up areas). The forests, though small in areal coverage and under threat from deforestation, are a very important resource to rural communities by providing fuelwood, construction materials, medicines, forage and shelter (LMS 2000).  Ecologically, Lesotho is divided into four agroecological zones namely; lowlands (17% of total area), foothills (15%), mountains (59%), and the Senqu River Valley (SRV) (9%). The country’s steep topography dictates in part the economic activities, which are largely confined to the lowlands, the foothills, and the Senqu River Valley, while the mountainous areas are suitable only for grazing and water resource development like hydropower for which it has a high potential (LMS 2000). Environmental degradation including severe soil erosion are impediments to crop production (LMS 2000). Soil erosion and desertification have been aggravated by recurrent droughts, rapid population growth and increasing pressure on natural resources, as well as unsustainable land and natural resource management practices. Loss of ground cover on the highland rangelands due to overstocking has resulted in excessive water runoff during mountain storms, leading to flash flooding and sheet and gully erosion, which is leading to loss of limited agricultural land. It is estimated that 4.5 million tons of soil is lost through soil erosion per year, thus reducing the productive capacity of the country’s croplands and rangelands and impacting on biodiversity by changing and reducing habitat for wild species. For the period 2005 to 2010, the energy sector was the highest emitter  of GHGs, followed by Agriculture,  Forestry and Other Land Use (AFOLU), Waste and Industrial Processes and Product Use (IPPU) (LMS, 2020). 
+
+__Climate:__ Lesotho has four distinct climatic seasons over a 12-month period, namely; Summer (December, January and February), Autumn (March, April and May), Winter (June, July and August) and Spring (September, October and November). Maximum and minimum temperatures recorded at various locations show wide variations on annual, monthly and diurnal time scales.  Mean temperatures vary from 10.9°C to 27.6°C during the summer (DJF) season with January being the hottest month. In winter (JJA), mean minimum temperatures vary between 0.1°C to 17.3°C with July being the coldest month. Annual mean temperatures are highly variable from year to year with an increasing trend. The country’s mean annual temperatures have increased by 0.76° C between 1970-2001 . During summer, prevailing wind directions are from the north and east, shifting to the south and west in winter (Sene et al. 1998). In the highlands, temperatures regularly drop to below zero and some areas may experience ground frost for up to 200 days per year (Sene et al. 1998).  Lesotho experiences one rainfall season which spans the months of October through April  of the following year with December to February being peak rainfall months. More than 80% of the annual rainfall is received during the rainy season,  which varies from 450 mm in the low-lying regions in the southwest to about 1200 mm in the northeast highlands where snowfall, which has a water equivalent depth usually less than 10% of the average rainfall, is also highest in winter especially in June and July (Sene et al. 1998). The winter months are characterized by occurrence of significant amounts of snowfall on annual basis in the high-lying areas and occasionally in the low-lying areas once every 3 years (NAPA, 2007). Droughts occur three years out of every 10, heavy frosts are frequent and heavy unseasonable rains also occur from time to time resulting in serious periodic falls in agricultural output (NAP Stocktaking Report 2015).
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning=FALSE)
+``` 
+
+```{r,include=FALSE}
+library(raster)
+library(rasterVis)
+library(reshape)
+library(dplyr)
+library(lubridate)
+library(tidyr)
+library(magrittr)
+library(R.utils)
+library(sf)
+library(plotly)
+library(ggplot2)
+library(rgee)
+
+```
+
+```{r data-download, cache=TRUE, include=FALSE}
+
+#prurl<- "https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_4.05/cruts.2103051243.v4.05/pre/cru_ts4.05.1901.2020.pre.dat.nc.gz"
+#download.file(prurl, destfile="cru_ts4.05.1901.2020.pre.dat.nc.gz")
+#gunzip("cru_ts4.05.1901.2020.pre.dat.nc.gz")
+#tmpurl<-"https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_4.05/cruts.2103051243.v4.05/tmp/cru_ts4.05.1901.2020.tmp.dat.nc.gz"
+#download.file(tmpurl, destfile = "cru_ts4.05.1901.2020.tmp.dat.nc.gz")
+#gunzip("cru_ts4.05.1901.2020.tmp.dat.nc.gz")
+
+```
+
+```{r geom-extent,include=FALSE}
+#LSO0<-getData('GADM', country='LSO', level=0)
+LSO1<-getData('GADM', country='LSO', level=1)
+#getData('ISO3')
+
+ls.sf<-st_as_sf(LSO1)
+plot(ls.sf$geometry)
+
+LSO_regions<-split(ls.sf, ls.sf$NAME_1)
+maseru<-LSO_regions$Maseru
+quthing<-LSO_regions$Quthing
+mklong<-LSO_regions$Mokhotlong
+bte<-LSO_regions$`Butha-Buthe`
+
+
+ee_Initialize()
+
+admin2<-ee$FeatureCollection("FAO/GAUL/2015/level2")
+admin1<-ee$FeatureCollection("FAO/GAUL/2015/level1")
+
+ls2<- admin2$filter(ee$Filter$eq('ADM0_NAME', 'Lesotho'))
+ls1<- admin1$filter(ee$Filter$eq('ADM0_NAME', 'Lesotho'))
+
+ls1_sf<-ee_as_sf(ls1)
+ls2_sf<-ee_as_sf(ls2)
+ls2_split<-split(ls2_sf, ls2_sf$ADM1_NAME)
+
+maseru2<-ls2_split$Maseru
+quthing2<-ls2_split$Quthing
+mklong2<-ls2_split$Mokhotlong
+bte2<-ls2_split$`Butha Buthe`
+
+```
+
+
+### National
+```{r}
+
+prstack<-stack("C:\\Workspace\\RMardown_NAPS\\Open-NAPs-Data\\opennaps\\cru_ts4.05.1901.2020.pre.dat.nc")
+tstack<-stack("C:\\Workspace\\RMardown_NAPS\\Open-NAPs-Data\\opennaps\\cru_ts4.05.1901.2020.tmp.dat.nc")
+
+pr_crop<-raster::crop(prstack, ls.sf)
+pr_mask<-raster::mask(pr_crop,ls.sf)
+
+
+tcrop<-raster::crop(tstack, ls.sf)
+tmask<-raster::mask(tcrop, ls.sf)
+
+prdf<-as.data.frame(pr_mask, xy=TRUE, na.rm=TRUE)%>% 
+  melt(id.vars=c('x','y'))
+tmpdf<-as.data.frame(tmask, xy=TRUE, na.rm=TRUE)%>%melt(id.vars=c('x', 'y'))
+
+
+Date<-substr(prdf$variable, 2,11) # extract date values from df
+prdf$Date<-Date # add date column to df
+Year<-substr(Date,1,4)
+Month<-substr(Date,6,7)
+prdf<-cbind(prdf, Year, Month)
+
+colnames(prdf)[colnames(prdf)=="value"]<-"pr"  # change column label
+
+
+tmpdf$Date<-substr(tmpdf$variable, 2,11) # extract date values from df
+tmpdf$Year<-substr(tmpdf$Date,1,4)
+tmpdf$Month<-substr(tmpdf$Date,6,7)
+#prdf<-cbind(prdf, Year, Month)
+
+colnames(tmpdf)[colnames(tmpdf)=="value"]<-"tmean"
+
+pr_monthly<-prdf%>%dplyr::filter(Year>=1991)%>% group_by(Month)%>%
+  summarise(across(contains("pr"), ~mean(pr))) 
+pr_monthly$Month<-factor(pr_monthly$Month,levels = c('07','08','09','10','11','12','01','02','03','04','05','06')) # reorder the months to start plotting from july to june
+
+
+temp_monthly<-tmpdf%>%dplyr::filter(Year>=1991)%>%group_by(Month)%>%summarise('tmean'=mean(tmean))
+temp_monthly$Month<-factor(temp_monthly$Month, levels = c('07','08','09','10','11','12','01','02','03','04','05','06'))
+
+pr_tmp<-cbind(pr_monthly,temp_monthly)
+pr_tmp<-pr_tmp[,-3]
+ 
+ty<-list(overlaying = "y",
+  side = "right",
+  title = "Temperature (°C)",
+  autotick = FALSE,
+      dtick = 10,
+ range=c(0,20)
+  )
+
+plotly::plot_ly(type= 'bar', data= pr_tmp, x= ~Month, y= ~pr, name = 'Precipitation')%>%
+  plotly::add_lines(x= ~Month, y= ~tmean, mode = 'lines+markers',name= 'Temperature', yaxis='y2')%>%
+  #plotly::add_markers(x= ~Month, y= ~tmean, pch=1,color='#D21919', yaxis='y2', name='')%>%
+    plotly::layout(legend=list(orientation='h', y=-0.1,x=0.7), yaxis=list(title='Precipitation (mm)',showticklables=F),width=700, height=450, title='Lesotho \n (Mean 1991-2020)', yaxis2=ty)
+```
+
+
+### Maseru
+```{r}
+pr_maseru<-raster::crop(prstack, maseru)%>%raster::mask(maseru)
+temp_maseru<-raster::crop(tstack, maseru)%>%raster::mask(maseru)
+
+prdf_maseru<-as.data.frame(pr_maseru, xy=TRUE, na.rm=TRUE)%>% 
+  melt(id.vars=c('x','y'))
+tmpdf_maseru<-as.data.frame(temp_maseru, xy=TRUE, na.rm=TRUE)%>%melt(id.vars=c('x', 'y'))
+
+
+prdf_maseru$Date<-substr(prdf_maseru$variable, 2,11) # extract date values from df
+prdf_maseru$Year<-substr(prdf_maseru$Date,1,4)
+prdf_maseru$Month<-substr(prdf_maseru$Date,6,7)
+#prdf<-cbind(prdf, Year, Month)
+
+colnames(prdf_maseru)[colnames(prdf_maseru)=="value"]<-"pr"
+
+
+tmpdf_maseru$Date<-substr(tmpdf_maseru$variable, 2,11) # extract date values from df
+tmpdf_maseru$Year<-substr(tmpdf_maseru$Date,1,4)
+tmpdf_maseru$Month<-substr(tmpdf_maseru$Date,6,7)
+
+
+colnames(tmpdf_maseru)[colnames(tmpdf_maseru)=="value"]<-"tmean"
+
+pr_monthly<-prdf_maseru%>%dplyr::filter(Year>=1991)%>% group_by(Month)%>%
+  summarise(across(contains("pr"), ~mean(pr))) 
+pr_monthly$Month<-factor(pr_monthly$Month,levels = c('07','08','09','10','11','12','01','02','03','04','05','06')) # reorder the months to start plotting from july to june
+
+
+temp_monthly<-tmpdf_maseru%>%dplyr::filter(Year>=1991)%>%group_by(Month)%>%summarise('tmean'=mean(tmean))
+temp_monthly$Month<-factor(temp_monthly$Month, levels = c('07','08','09','10','11','12','01','02','03','04','05','06'))
+
+pr_tmp<-cbind(pr_monthly,temp_monthly)
+pr_tmp<-pr_tmp[,-3]
+ 
+ty<-list(overlaying = "y",
+  side = "right",
+  title = "Temperature (°C)",
+  autotick = FALSE,
+      dtick = 10,
+ range=c(0,20)
+  )
+
+plotly::plot_ly(type= 'bar', data= pr_tmp, x= ~Month, y= ~pr, name = 'Precipitation')%>%
+  plotly::add_lines(x= ~Month, y= ~tmean, mode = 'lines+markers',name= 'Temperature', yaxis='y2')%>%
+  #plotly::add_markers(x= ~Month, y= ~tmean, pch=1,color='#D21919', yaxis='y2', name='')%>%
+    plotly::layout(legend=list(orientation='h', y=-0.1,x=0.7), yaxis=list(title='Precipitation (mm)',showticklables=F),width=700, height=450, title='Maseru \n (Mean 1991-2020)', yaxis2=ty)
+
+
+```
+
+
+
+### Quthing
+```{r}
+pr_quthing<-raster::crop(prstack, quthing)%>%raster::mask(quthing)
+temp_quthing<-raster::crop(tstack, quthing)%>%raster::mask(quthing)
+
+prdf_quthing<-as.data.frame(pr_quthing, xy=TRUE, na.rm=TRUE)%>% 
+  melt(id.vars=c('x','y'))
+tmpdf_quthing<-as.data.frame(temp_quthing, xy=TRUE, na.rm=TRUE)%>%melt(id.vars=c('x', 'y'))
+
+
+prdf_quthing$Date<-substr(prdf_quthing$variable, 2,11) 
+prdf_quthing$Year<-substr(prdf_quthing$Date,1,4)
+prdf_quthing$Month<-substr(prdf_quthing$Date,6,7)
+
+colnames(prdf_quthing)[colnames(prdf_quthing)=="value"]<-"pr"
+
+
+tmpdf_quthing$Date<-substr(tmpdf_quthing$variable, 2,11) 
+tmpdf_quthing$Year<-substr(tmpdf_quthing$Date,1,4)
+tmpdf_quthing$Month<-substr(tmpdf_quthing$Date,6,7)
+
+
+colnames(tmpdf_quthing)[colnames(tmpdf_quthing)=="value"]<-"tmean"
+
+pr_monthly<-prdf_quthing%>%dplyr::filter(Year>=1991)%>% group_by(Month)%>%
+  summarise(across(contains("pr"), ~mean(pr))) 
+pr_monthly$Month<-factor(pr_monthly$Month,levels = c('07','08','09','10','11','12','01','02','03','04','05','06')) #
+
+
+temp_monthly<-tmpdf_quthing%>%dplyr::filter(Year>=1991)%>%group_by(Month)%>%summarise('tmean'=mean(tmean))
+temp_monthly$Month<-factor(temp_monthly$Month, levels = c('07','08','09','10','11','12','01','02','03','04','05','06'))
+
+pr_tmp<-cbind(pr_monthly,temp_monthly)
+pr_tmp<-pr_tmp[,-3]
+ 
+ty<-list(overlaying = "y",
+  side = "right",
+  title = "Temperature (°C)",
+  autotick = FALSE,
+      dtick = 10,
+ range=c(0,20)
+  )
+
+plotly::plot_ly(type= 'bar', data= pr_tmp, x= ~Month, y= ~pr, name = 'Precipitation')%>%
+  plotly::add_lines(x= ~Month, y= ~tmean, mode = 'lines+markers',name= 'Temperature', yaxis='y2')%>%
+  #plotly::add_markers(x= ~Month, y= ~tmean, pch=1,color='#D21919', yaxis='y2', name='')%>%
+    plotly::layout(legend=list(orientation='h', y=-0.1,x=0.7), yaxis=list(title='Precipitation (mm)',showticklables=T),width=700, height=450, title='Quthing \n (Mean 1991-2020)', yaxis2=ty)
+```
+
+
+
+### Mokhotlong
+```{r}
+pr_mklong<-raster::crop(prstack, mklong)%>%raster::mask(mklong)
+temp_mklong<-raster::crop(tstack, mklong)%>%raster::mask(mklong)
+
+prdf_mklong<-as.data.frame(pr_mklong, xy=TRUE, na.rm=TRUE)%>% 
+  melt(id.vars=c('x','y'))
+tmpdf_mklong<-as.data.frame(temp_mklong, xy=TRUE, na.rm=TRUE)%>%melt(id.vars=c('x', 'y'))
+
+
+prdf_mklong$Date<-substr(prdf_mklong$variable, 2,11) # extract date values from df
+prdf_mklong$Year<-substr(prdf_mklong$Date,1,4)
+prdf_mklong$Month<-substr(prdf_mklong$Date,6,7)
+#prdf<-cbind(prdf, Year, Month)
+
+colnames(prdf_mklong)[colnames(prdf_mklong)=="value"]<-"pr"
+
+
+tmpdf_mklong$Date<-substr(tmpdf_mklong$variable, 2,11) # extract date values from df
+tmpdf_mklong$Year<-substr(tmpdf_mklong$Date,1,4)
+tmpdf_mklong$Month<-substr(tmpdf_mklong$Date,6,7)
+
+
+colnames(tmpdf_mklong)[colnames(tmpdf_mklong)=="value"]<-"tmean"
+
+pr_monthly<-prdf_mklong%>%dplyr::filter(Year>=1981)%>% group_by(Month)%>%
+  summarise(across(contains("pr"), ~mean(pr))) 
+pr_monthly$Month<-factor(pr_monthly$Month,levels = c('07','08','09','10','11','12','01','02','03','04','05','06')) # reorder the months to start plotting from july to june
+
+
+temp_monthly<-tmpdf_mklong%>%dplyr::filter(Year>=1981)%>%group_by(Month)%>%summarise('tmean'=mean(tmean))
+temp_monthly$Month<-factor(temp_monthly$Month, levels = c('07','08','09','10','11','12','01','02','03','04','05','06'))
+
+pr_tmp<-cbind(pr_monthly,temp_monthly)
+pr_tmp<-pr_tmp[,-3]
+ 
+ty<-list(overlaying = "y",
+  side = "right",
+  title = "Temperature (°C)",
+  autotick = FALSE,
+      dtick = 10,
+ range=c(0,20)
+  )
+
+plotly::plot_ly(type= 'bar', data= pr_tmp, x= ~Month, y= ~pr, name = 'Precipitation')%>%
+  plotly::add_lines(x= ~Month, y= ~tmean, mode = 'lines+markers',name= 'Temperature', yaxis='y2')%>%
+  #plotly::add_markers(x= ~Month, y= ~tmean, pch=1,color='#D21919', yaxis='y2', name='')%>%
+    plotly::layout(legend=list(orientation='h', y=-0.1,x=0.7), yaxis=list(title='Precipitation (mm)',showticklables=F),width=700, height=450, title='Mokhotlong \n (Mean 1981-2020)', yaxis2=ty)
+
+
+```
+
+### Butha-Buthe
+```{r}
+pr_bte<-raster::crop(prstack, bte)%>%raster::mask(bte)
+temp_bte<-raster::crop(tstack, bte)%>%raster::mask(bte)
+
+prdf_bte<-as.data.frame(pr_bte, xy=TRUE, na.rm=TRUE)%>% 
+  melt(id.vars=c('x','y'))
+tmpdf_bte<-as.data.frame(temp_bte, xy=TRUE, na.rm=TRUE)%>%melt(id.vars=c('x', 'y'))
+
+
+prdf_bte$Date<-substr(prdf_bte$variable, 2,11) # extract date values from df
+prdf_bte$Year<-substr(prdf_bte$Date,1,4)
+prdf_bte$Month<-substr(prdf_bte$Date,6,7)
+#prdf<-cbind(prdf, Year, Month)
+
+colnames(prdf_bte)[colnames(prdf_bte)=="value"]<-"pr"
+
+
+tmpdf_bte$Date<-substr(tmpdf_bte$variable, 2,11) # extract date values from df
+tmpdf_bte$Year<-substr(tmpdf_bte$Date,1,4)
+tmpdf_bte$Month<-substr(tmpdf_bte$Date,6,7)
+
+
+colnames(tmpdf_bte)[colnames(tmpdf_bte)=="value"]<-"tmean"
+
+pr_monthly<-prdf_bte%>%dplyr::filter(Year>=1981)%>% group_by(Month)%>%
+  summarise(across(contains("pr"), ~mean(pr))) 
+pr_monthly$Month<-factor(pr_monthly$Month,levels = c('07','08','09','10','11','12','01','02','03','04','05','06')) # reorder the months to start plotting from july to june
+
+
+temp_monthly<-tmpdf_bte%>%dplyr::filter(Year>=1981)%>%group_by(Month)%>%summarise('tmean'=mean(tmean))
+temp_monthly$Month<-factor(temp_monthly$Month, levels = c('07','08','09','10','11','12','01','02','03','04','05','06'))
+
+pr_tmp<-cbind(pr_monthly,temp_monthly)
+pr_tmp<-pr_tmp[,-3]
+ 
+ty<-list(overlaying = "y",
+  side = "right",
+  title = "Temperature (°C)",
+  autotick = FALSE,
+      dtick = 10,
+ range=c(0,20)
+  )
+
+plotly::plot_ly(type= 'bar', data= pr_tmp, x= ~Month, y= ~pr, name = 'Precipitation')%>%
+  plotly::add_lines(x= ~Month, y= ~tmean, mode = 'lines+markers',name= 'Temperature', yaxis='y2')%>%
+  #plotly::add_markers(x= ~Month, y= ~tmean, pch=1,color='#D21919', yaxis='y2', name='')%>%
+    plotly::layout(legend=list(orientation='h', y=-0.1,x=0.7), yaxis=list(title='Precipitation (mm)',showticklables=F),width=700, height=450, title='Butha-Buthe \n (Mean 1981-2020)', yaxis2=ty)
+
+
+```
+
+
+
+
+
+
+__Political:__ Lesotho is a sovereign democratic kingdom that is led by the King as the constitutional monarch and head of state (Lesotho Constitution, Chapter I). There are three arms of government, namely, the Legislature, the Executive, and the Judiciary. The Legislature has a system of government in which the legislature consists of two houses; the Upper House or Senate, and the Lower House or National Assembly. The Senate comprises of 22 principal chiefs, who are members by heredity rights and 11 other members, nominated by the King (Lesotho Constitution, Chapter VI). The National Assembly comprises of one hundred and twenty elected members. The succession of the King is determined by the College of Chiefs who designates the king’s successor in accordance with the customary laws of the country (Lesotho Constitution, Chapter V). Lesotho is a member of the United Nations, the Commonwealth of Nations, the African Union, and the Southern African Development Community (SADC). 
+
+__Legislative:__ The National Climate-Change Policy 2017-2027 sets the climate change agenda in Lesotho. The policy is aligned to the Vision 2020 and the National Strategic Development Plan. It sets the context to inform adaptation strategies to mitigate climate change impacts (World Bank, 2018). The 2017 National Climate Change Policy Implementation Strategy is an implementation framework of the National Climate Change Policy. The wider legal, regulatory and institutional framework is discussed in more detail in sections 4.2 and 4.3.
+
+__Social:__ The population of Lesotho was estimated at 2,008,801 in 2016, with an annual population growth rate of 0.08% (Census, 2016) while current (2020) estimates place it at 2,147,418 with over 70 percent of people residing in rural areas. Women make up 51.1 percent of the population, with youth (those between 15 to 35 years) comprising nearly 39.6 percent (50.7 percent male and female 49.3 percent) of the total population. According to the 2016 population census, the distribution of the population in the four ecological zones is: 62% in the lowlands; 9.7% in the foothills; 19.6% in the mountains, and; 8.7% in the Senqu River Valley. Majority of the population is concentrated in the lowlands resulting in very high population densities. The country’s population is mainly distributed across the rural, urban, and the peri-urban areas. The country with Human Development Index of 0.527 is ranked 165/189 , indicating a low human development. 
+The population in severe multidimensional poverty is 5%, but 28.6% are vulnerable to it (OPHI-UNDP 2020). On the Global Needs assessment (GNA) Vulnerability Index, Lesotho is ranked 2/3 and on the GNA Crisis Index it scores 3/3, indicating a high vulnerability. In terms of population growth rate trends, the growth rate was 2.6% in 1986, 1.5% in 1996, 0.08% in 2006, and 0.68 in 2016: this erratic change in the country’s population growth is attributed to the impacts of the HIV and AIDS pandemic on the population (Census, 2016). After Eswatini, as at 2018, Lesotho had the second highest HIV prevalence rate at 23.6% globally (UNAIDS, 2019). The report estimated 340,000 people were living with HIV while 6,100 died from AIDS-related illnesses in 2018 in the country. 
+
+__Economic:__ Lesotho’s economy is intricately linked to its regional and international partners. Its economy is primarily based on four sectors, namely: water, manufacturing, mining and agriculture (LMS 2017). Other significant contributors to the economy are: Customs Duties from the Southern African Customs Union (SACU); benefits accruing from other regional and international trade agreements and protocols; and individual remittances from Basotho working in South Africa. Thus, Lesotho is a low-income country with a small domestic market and private sector. The government is the main driver of economic activities estimated to account for 60% of the national Gross Domestic Product (United Nations, 2020). For instance, in 2018/2019 financial year recoveries by the government in textile and mining (diamond) sectors resulted in 3% growth of the GDP (United Nations, 2020). Lesotho’s major natural resource is water. In January 1998, the government completed a major hydropower facility – which was part of the Lesotho Highlands Water Project (LHWP). LHWP is a multistage infrastructure project to transfer water from water rich-highlands of Lesotho and to enhance water security against future potential vulnerabilities (World Bank, 2016). The facility has permitted sale of water to South Africa and generated royalties that have earned the country significant income (Government of Lesotho). Indeed, it is Lesotho’s largest source of foreign income (NAP Stocktaking Report 2015). In 2018 and 2019, Lesotho’s economy contracted due to the volatility of Southern African Customs Union (SACU) receipts to which the country is a member. SACU receipts account for about half of total Lesotho government revenue (Lesotho economy, 2020). The coronavirus pandemic has further slowed the economic resurgence and necessitated external emergency funding.  For instance, through its rapid credit facility (RCF), the International Monetary Fund (IMF) approved a US$49.1m disbursement to Lesotho in early August 2020 to mitigate the pandemic’s impacts on the economy (Lesotho Economy, 2020). Real GDP growth rate is estimated to have contracted by 1.2% and 0.4% in 2018 and 2019 and it is projected to average 0.6% between 2019–2023 (World Bank 2021). However, in the medium-term, economic growth is expected to be boosted by construction-related projects including the second phase of the Lesotho Highlands Water Project (LHWP II) and the Lesotho Lowlands Water Development Projects (LLWDP -I and-II). The water and electricity subsectors are expected to be boosted by green energy projects, while the tertiary sector is envisaged to be supported inter alia by government initiatives to reinforce financial inclusion (World Bank 2021). 
+
+
+```{r}
+library(flextable)
+library(magrittr)
+sectorg<-readxl::read_excel("Tables_from_NAP.xlsx", 
+    sheet = "sector_growth")
+t1<-flextable(sectorg,col_keys = names(sectorg),
+  cwidth = 3,
+  cheight = 0.01,
+  defaults = list(),
+   theme_booktabs())
+t2<-fontsize(t1,part = 'all', size = 8)
+t3<-border_outer(t2,part = 'all', border = NULL)
+t4<-border_inner(t3,part = 'all', border = NULL)
+t5<-bold(t4,part='header')
+t6<-bold(t5,i=c(1,2,3,4,8,17))
+t6<-set_caption(t6, caption = "Fiscal Year Real Sector Growth Rates (percent) Projections, Source: Ministry of Finance, 2021")
+t6
+```
+
+__OR__
+
+
+```{r}
+library(flextable)
+library(magrittr)
+sectorg2<-readxl::read_excel("Tables_from_NAP.xlsx", 
+    sheet = "sector_growth2")
+t1<-flextable(sectorg2,col_keys = names(sectorg2),
+  cwidth = 3,
+  cheight = 0.01,
+  defaults = list(),
+   theme_booktabs())
+t2<-fontsize(t1,part = 'all', size = 8)
+t3<-border_outer(t2,part = 'all', border = NULL)
+t4<-border_inner(t3,part = 'all', border = NULL)
+t5<-bold(t4,part='header')
+t6<-bold(t5,i=c(1,2,3,4,8,17))
+t6<-set_caption(t6, caption = "Calendar Year Real Sector Growth Rates (percent) Projections, Source: Ministry of Finance, 2021")
+t6
+```
+
+
+Over 70 percent of the country’s population lives in rural areas and depends, directly or indirectly, on agriculture for employment and livelihood. Over half (57.1%) of the country’s population lives below the poverty line (LMS 2017). UNDP (2019) states that in 2014, 8.5% of the country’s population was in severe multidimensional poverty while 24.4%, and 59.7% were vulnerable to multidimensional poverty and below the income poverty line, respectively. There is also high unemployment rate in Lesotho. In 2017, the unemployment rate was estimated at 27.25% while 50% of the entire population remained in poverty (Hapazari, 2019). Besides farming and animal husbandry, other sources of employment include small-scale industries such as clothing, footwear, textiles, food processing and construction. Migrant labour is another source of employment where a large portion of the adult male workforce are employed in the South African mines. Majority of the poor reside in the rural areas. The challenges of poverty and high unemployment among the communities are exacerbated by among other things, rugged terrain, limited production, over-reliance on South Africa, and adverse climate of extreme cold winters and very hot summers (Hapazari, 2019).
+
+__Technological:__ Environmentally sound technologies and knowhow are imperative assets for developing countries to enable them implement measures to mitigate the adverse effects of climate change, as recognized by the United Nations Framework Convention on Climate Change (UNFCCC). The UNFCCC also calls for all practicable steps to be taken to promote, facilitate and finance, as appropriate, the transfer of, or access to, these technologies and knowhow. While Lesotho has embarked on the identification, assessment and development of technologies that promote sustainable development without contributing significantly to greenhouse gas emissions, and adaptation to climate change, the barriers to the transfer of these environmentally sound technologies (ESTs) has been found to be insurmountable in some sectors of the economy (Mhlanga 2004; LMS 2017), and some external support is required to hasten climate resilience building actions across all sectors (LMS 2017).
+
+
+##	Legal frameworks
+
+The NAP aligns with the goals and objectives of the National Climate Change Policy 2017-2027 (NCCP)  which sets the climate change agenda  in Lesotho. The National Climate Change Policy has articulated Lesotho’s aspirations on matters concerning climate change mitigation and adaptation as indicated by its 22 policy statements. To effectively implement the policy, a National Climate Change Implementation Strategy (NCCPIS) has also been developed. The 2017 NCCPIS is a five-year implementation framework of the National Climate Change Policy.  The strategy establishes action guidelines for mainstreaming climate change into key socio-economic sectoral plans and programmes while safeguarding environmental integrity and sustainable development in Lesotho. 
+
+The National Strategic Development Plan 2018/19 – 2022/23 (NSDPII) is a national policy document and it also serves as a reference for the country’s sectoral plans in order to enhance and uplift Basotho’s social well-being. NSDP II has identified climate change as one of the major domestic threats to developmental progress. NSDP II also takes cognizance of the importance of mainstreaming of climate change adaptation and mitigation in all socio-economic sectors as these are crucial for economic growth, thereby setting the basis upon which the NAP process can be mainstreamed. . 
+
+The NCCP policy statements are:  
+
+1.	Strengthen climate early warning systems and improve climatic information, including research and systematic observations;
+2.	Enhance the resilience of water resources by promoting integrated catchment management, ensuring access, supply and sanitation;
+3.	Promote climate-smart agriculture and food security systems;
+4.	Develop renewable energy sources and increase energy efficiency;
+5.	Promote climate resilience in mining;
+6.	Promote climate resilience and reduce greenhouse gas emissions in manufacturing;
+7.	Climate proof and increase efficiency of the tourism sector;
+8.	Enhance best practice for forestry and rangelands to mitigate and adapt to climate change;
+9.	Increase the resilience of environment, ecosystems and biodiversity;
+10.	Address climate change impacts on human health;
+11.	Promote low-carbon and climate resilient transport systems;
+12.	Climate proof human settlements and infrastructure;
+13.	Enhance the resilience of natural and cultural heritage;
+14.	Promote agro – ecological/district/local level approach to addressing climate change;
+15.	Strengthen climate change governance frameworks;
+16.	Promote participation of gender, youth, and vulnerable groups;
+17.	Promote participation of the civil society;
+18.	Promote participation of the private sector;
+19.	Implement education, training, public awareness and communication programmes;
+20.	Promote research and development, innovation and technology transfer;
+21.	Mobilize financial resources; and
+22.	Enhance social security/ protection by managing climate induced migration.
+
+There are a number of other frameworks in place (Table 2) to help domesticate the climate change adaptation process. Notwithstanding development of these policies, climate change adaptation and mitigation has not been adequately integrated in sectoral policies and plans. Some of the relevant policies and strategies that should be reviewed and brought into line with the NCCP 2017-2027, with cross-cutting inclusion of climate change adaptation and mitigation, gender and social inclusion, and environment  include those listed in table 2:
+
+  
+
+```{r}
+library(flextable)
+library(magrittr)
+policies<-readxl::read_excel("Tables_from_NAP.xlsx", 
+    sheet = "adapt_policies")
+t1<-flextable(policies,col_keys = names(policies),
+  cwidth = 3,
+  cheight = 0.01,
+  defaults = list(),
+   theme_booktabs())
+t2<-fontsize(t1,part = 'all', size = 8)
+t3<-border_outer(t2,part = 'all', border = NULL)
+t4<-border_inner(t3,part = 'all', border = NULL)
+t5<-bold(t4,part='header')
+t6<-set_caption(t5, "Policies/Strategies/plans relevant for adaptation")
+t6
+
+
+```
+
+
+```{r}
+library(flextable)
+library(magrittr)
+spolicies<-readxl::read_excel("Tables_from_NAP.xlsx", 
+    sheet = "sectoral_policies")
+t1<-flextable(spolicies,col_keys = names(spolicies),
+  cwidth = 3,
+  cheight = 0.01,
+  defaults = list(),
+   theme_booktabs())
+t2<-fontsize(t1,part = 'all', size = 8)
+t3<-border_outer(t2,part = 'all', border = NULL)
+t4<-border_inner(t3,part = 'all', border = NULL)
+t5<-bold(t4,part='header')
+t6<-set_caption(t5, "Table 3: National/sectoral policies, strategies and plans relevant for adaptation")
+t6
+
+```
+_Sources: https://climate-laws.org/cclow/legislation_and_policies?q=lesotho; NDC_Lesotho (2017)_
+
+
+## Institutional arrangements for climate change adaptation
+
+The Ministry of Energy and Meteorology (MEM) through LMS is charged with the responsibility of monitoring and reporting on weather, climate and climate change issues. In addition, MEM ensures that the country adheres and implements commitments under the UNFCCC and the Paris Agreement. A National Climate Change Committee (NCCC) was formally established in 2013 to effectively coordinate climate change issues in the country. The committee serves as an advisory body to MEM. Other major responsibilities of the MEM include implementation of the Vienna Convention and Montreal Protocol on Substances that deplete the ozone layer; and provision of support to other Multilateral Environmental Agreements (MEAs).
+
+The successful implementation of National Climate Change Policy is much dependent on active support and effective participation of all stakeholders as stipulated in the National Climate Change Policy and its  Implementation Strategy . Proper coordination and mainstreaming of climate change activities into different sectors of the economy is key to addressing the issues of working in silos by various departments, institutions and organizations; a state that could lead to disharmony between different actors and undermine its effectiveness and efficiency. It is against this background that the NCCPIS calls for the establishment of an institutional framework and set up that will be effective in implementing the Policy (see below). 
+
+![Figure 2. Proposed institutional arrangement. Source: National Climate Change Policy Implementation Strategy (2017)](images/instit_arrangement.png)
+
+

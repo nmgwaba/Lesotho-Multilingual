@@ -1,0 +1,50 @@
+# ANNEXES {-}
+
+1.	Country Profile
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning=FALSE)
+``` 
+
+```{r}
+library(flextable)
+library(magrittr)
+cprofile<-readxl::read_excel("Tables_from_NAP.xlsx", 
+    sheet = "country_profile")
+t1<-flextable(cprofile,col_keys = names(cprofile),
+  cwidth = 3,
+  cheight = 0.01,
+  defaults = list(),
+   theme_booktabs())
+t2<-fontsize(t1,part = 'all', size = 8)
+t3<-border_outer(t2,part = 'all', border = NULL)
+t4<-border_inner(t3,part = 'all', border = NULL)
+t5<-bold(t4,part='header')
+t6<-bold(t5,i=c(1:2,43))
+t6
+
+```
+
+
+2.	NAP process roadmap: linkages and sequencing of different elements 
+
+```{r}
+library(flextable)
+library(magrittr)
+rp_links<-readxl::read_excel("Tables_from_NAP.xlsx", 
+    sheet = "roadmap_linkages")
+t1<-flextable(rp_links,col_keys = names(rp_links),
+  cwidth = 3,
+  cheight = 0.01,
+  defaults = list(),
+   theme_booktabs())
+t2<-fontsize(t1,part = 'all', size = 8)
+t3<-border_outer(t2,part = 'all', border = NULL)
+t4<-border_inner(t3,part = 'all', border = NULL)
+t5<-bold(t4,part='header')
+t6<-bold(t5,i=c(1,30,60,64))
+t6
+```
+
+
+

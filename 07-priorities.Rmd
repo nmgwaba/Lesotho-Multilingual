@@ -1,0 +1,147 @@
+# National adaptation priorities
+
+##	Key risks and adaptation options 
+
+The key risks and adaptation options are presented based on analysis and summary of past and current data and reports up to 2020. The risk levels are divided into three temporal periods: near future (2011 - 2040 which is the period for which most of the granular [sub-regional] climate projections are based; mid-future (MF – covering the period 2041-2070) and far future (FF – the period 2071 to 2100). Risk level is assigned based on the criteria outlined below and expert judgment as presented in the reports in the framework outlined in the NAP technical guidelines report. It is evident that there are inadequately projected risks, particularly beyond 2040 for most of the systems/sectors and how this gap can be addressed is outlined in section 8 of this report.
+
+Risk assessment criteria (scores are provided in brackets, with a possible highest score of 24, and ranked as follows: high (20 or more; medium (15-19), low (14 and below):  
+_The probability of a given climate hazard_ – The general probability for change in a climate hazard (such as temperature or extreme precipitation events) occurring.   
+
+* __High__ probability of the climate hazard occurring (3);
+* __Medium__ probability of the climate hazard occurring (2);
+* __Low__ probability of the climate hazard occurring (1). 
+
+_The likelihood of impact occurrence_ – The likelihood that a change in a given climate hazard (e.g. temperature rise) will result in a particular impact (e.g. material failure). Examples of likelihood categories include:  
+
+* __Virtually certain/already occurring__ – Nearly certain likelihood of the impact occurring over the life of the infrastructure, and/or the climate hazard may already be impacting infrastructure (3);
+* __High __likelihood of the impact occurring over the life of the infrastructure (2);
+* __Moderate__ likelihood of the impact occurring over the life of the infrastructure (1);
+* __Low__ likelihood of the impact occurring over the life of the infrastructure (0).
+
+_The magnitude of the consequence_ – The combined impacts, should a given hazard occur, taking into account such factors as: 
+
+* __Internal operations__, including the scope and duration of service interruptions, reputational risk, and the potential to encounter regulatory problems (1 - low to 3 – high);
+* __Capital and operating costs__, including all capital and operating costs to the stakeholder and revenue implications caused by the climate change impact; (1 - low to 3 – high);
+* __Number of people impacted__, including considerations related to any impacts on vulnerable populations (including, but not limited to seniors, low-income communities, mentally or physically disabled citizens, homebound residents, and children); (1 - low to 3 – high);
+* __Public health__, including worker safety; (1 - low to 3 – high);
+* __Economy__, including any impacts to the city’s economy, the price of services to customers, and clean-up costs incurred by the public; (1 - low to 3 – high);
+* __Environment__, including the release of toxic materials and impacts on biodiversity, the state’s ecosystems, and historic sites. (1 - low to 3 – high).
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning=FALSE)
+``` 
+
+```{r}
+library(flextable)
+library(magrittr)
+proj_cc<-readxl::read_excel("Tables_from_NAP.xlsx", 
+    sheet = "projected_cc")
+t1<-flextable(proj_cc,col_keys = names(proj_cc),
+  cwidth = 3,
+  cheight = 0.01,
+  defaults = list(),
+   theme_booktabs())
+t2<-fontsize(t1,part = 'all', size = 8)
+t3<-border_outer(t2,part = 'all', border = NULL)
+t4<-border_inner(t3,part = 'all', border = NULL)
+t5<-bold(t4,part='header')
+t6<-set_caption(t5, "Projected climate changes and impacts. NF – near future (2011-2040), MF – mid-future (2041-2070), FF – far future (2071-2100)")
+t6
+```
+
+ _(Primary sources: LMS 2000; NDC_Lesotho (2017); NAPA Lesotho 2017; Lesotho Systems February 2015 m.map; NAP Stocktaking Report 2015); LMS 2021. Secondary sources: Kleine, Buck and Eastaugh, 2010, adapted from Spittlehouse and Stewart, 2003 and Kalame et al., 2009_
+
+From the risks related to projected climate changes, it is clear that Lesotho must put in place adaptation options that deal with the following climate change clusters in order of priority:  
+
+1.	__Rainfall extremes – droughts and floods, and rainfall variability, including impacts of  tropical cyclone activity.__ These adversely impact the following systems’ components: Crop production; Livestock production; Horticulture and cash crops; Ecosystems and biodiversity; Rangelands, Alpine (Mountain), Wetlands, Fisheries, Manufacturing and trade; Social-Cultural; Water resources and supply; Energy; Health; Knowledge and information; Human settlements and living spaces; Tourism. Adaptation options to address these are in the immediate, medium and long-term timeframes. 
+2.	__Temperature extremes – Heat and Cold Stress, and changes in rainfall patterns between and within seasons.__ These will have impacts on the following systems’ components: Crop production; Livestock production; Horticulture and cash crops; Ecosystems and biodiversity; Rangelands, Alpine (Mountain), Fisheries, Manufacturing and trade; Social-Cultural; Water resources and supply; Energy; Health; Knowledge and information; Cities and human settlements; Tourism. Adaptation options to address these are in the immediate, medium and long-term timeframes.
+3.	__Progressively rising minimum and maximum temperatures, increased duration of number of hot days and dry spells.__ These will have impacts on the following systems’ components: Crop production; Livestock production; Commercial agriculture; Ecosystems and biodiversity; Rangelands, Alpine (Mountain), Wetlands, Fisheries, Horticulture and cash crops; Social-Cultural; Water resources and supply; Energy; Health; Knowledge and information; Cities and human settlements; Tourism. Adaptation options to address these are in the medium and long-term timeframes.
+
+
+##	Ranking adaptation actions
+
+The adaptation options listed below have been ranked using multi-criteria analysis, that is partly modified from Sinay and Carter (2020) to make it simple for a large group of diverse stakeholders to come to consensus easily on the priority adaptation actions which will be unpacked in the project development plans. The adaptation options are clustered under over-arching adaptation themes which are the most likely to generate synergistic and wide-reaching co-benefits for the country as a whole. The project development plans will take into consideration other specific criteria that will assess aspects such as alignment with SDGs, Sendai Framework and Country GCF programmes, and inclusion of cross-cutting factors such as gender, vulnerable groups, policy and legislative reforms, and knowledge and capacity building at individual, community, institutional and systemic levels. These aspects align well with the five broad strategy clusters of the NSDP II, namely;   
+
+*	Accelerated, Shared and Sustainable Economic Growth
+*	Human Development and Social protection
+*	Good Governance
+*	Environment, Natural Resources and Climate Change
+*	Cross cutting issues: integration of population, gender, youth and other vulnerable populations.
+
+These considerations have been taken into account in the development of the Environment, Natural Resources and Climate Change Chapter which is included in the Public Sector  Investment Plan attached to the NSDP, addressing and integrating environment and climate issues into development under five strategic objectives: Integrated Land and Water Resources Management; A Climate-Resilient Nation; A Green Economy; Delivery of Environmental Services and Environmental Health, and; Strategic Environment and Climate Governance.
+
+
+__Criteria:__
+```{r}
+library(flextable)
+library(magrittr)
+criteria<-readxl::read_excel("Tables_from_NAP.xlsx", 
+    sheet = "ranking_criteria")
+t1<-flextable(criteria,col_keys = names(criteria),
+  cwidth = 3,
+  cheight = 0.01,
+  defaults = list(),
+   theme_booktabs())
+t2<-fontsize(t1,part = 'all', size = 8)
+t3<-border_outer(t2,part = 'all', border = NULL)
+t4<-border_inner(t3,part = 'all', border = NULL)
+t5<-bold(t4,part='header')
+t6<-bold(t5,j=1)
+t6<-set_caption(t6, "Projected climate changes and impacts. NF – near future (2011-2040), MF – mid-future (2041-2070), FF – far future (2071-2100)")
+t6
+```
+
+
+___Adaptation Options – Ranked:___
+
+1.	Ensure sustainable water supplies for multiple uses through: integrated catchment management and protection of key water towers and associated river basins, restoration and rehabilitation of degraded lands including wetlands in mountain areas and flood prone areas in the lowlands. Establish a national integrated water resource management framework that incorporates  community-based catchment monitoring and management, building appropriate capacity where needed, and revise the water-related and water-reliant policies and strategies to underpin these measures. Promote water recycling activities and to a large extent dredge some existing ponds and dams to collect and conserve water 
+2.	Upscaling interventions that combat  land degradation and soil erosion by implementing land rehabilitation programmes incorporating integrated approaches to Sustainable Land Use Planning and Management, promotion of nature-positive land use practices and improvement of legislation addressing range management and the conservation of genetic resources.
+3.	Promote climate-smart agriculture and innovations in post-harvest storage and food processing, including: implementing conservation agriculture, improved land management e.g. erosion control and soil protection and agroforestry practices; expanding irrigation and enhancing water use efficiency; crop and livestock diversification, adjustment of planting dates and crop variety informed by integrated climate forecasts; crop relocation; promotion of drought-tolerant and heat-tolerant crop varieties and hardy livestock, and; build the capacity of smallholder farmers to adopt climate resilient agronomic practices.
+4.	Devise and implement a multi-hazard forecasting and early warning system to support systems planning, monitoring and disaster preparedness and facilitate inclusive participation, access, sharing and information exchange using well documented and advertised channels of communication. Add a sentence to address issues of sustainability. 
+5.	Support and implement programmes for alternative livelihoods in order to reduce unsustainable resource use that contributes to loss of biodiversity, including: strengthening and stabilizing rural livelihoods through diverse adaptation interventions including ecotourism and aquaculture. 
+6.	Preserve natural forest and expand afforestation and forest regeneration programmes to maintain biodiversity and ecosystems and conserve genetic resources, including: protection and conservation of indigenous and endangered species and promotion of drought tolerant and fast growing tree species; development and maintenance of a frequent forest inventory system to facilitate monitoring of forest status and strengthening the implementation of the national Community-Based Forest Resources Management Programme; enhanced regulatory protections for floral and faunal species potentially at risk due to climate changes; and prevention of wildfires.
+7.	Protect and conserve grasslands and rangelands.
+8.	Improve access to sufficient and safe water supplies for various purposes by: promoting appropriately scaled multi-purpose water reservoirs and expanding rainwater harvesting and water storage facilities and connected infrastructure across the public and private sector domains, down to the household level, and;  construct boreholes where plausible with supporting storages and reticulated water supply systems at village level for better access to clean drinking water. Grow awareness of, encourage and build capacity at scale in: water conservation, including re-use, recycling and irrigation efficiency; protection of natural and artificial wells; surface runoff control and managed aquifer recharge.
+9.	Climate proof supply distribution systems (water/power), waste management systems (sanitation) and transport systems (roads, bridges).
+10.	Diversify the energy mix by implementing renewable energy (solar/wind) projects in addition to multi-purpose dams for hydropower, and promote use of efficient bioenergy technologies, supporting these with appropriate guiding policies, regulatory framework/legislation and capacity building.
+11.	Strengthen the capacity of the health system to prepare for and respond to disasters, including: construction and equipping of more health centres in order to improve access to health facilities within a walking distance of 8 km; support programmes for preventing and controlling climate induced diseases; enhance public awareness about water, sanitation and hygiene practices; enhance health surveillance, and; build capacity to diagnose, prevent and control climate-induced diseases such as diarrheal diseases and malnutrition.
+12.	Develop and implement climate related building codes/standards and revise existing building and construction standards in line with climate change.
+
+Some already identified priority activities that can be developed into comprehensive adaptation plans for GCF funding and implementation are outlined below.
+
+__a.	Key Priority activities__  
+
+```{r}
+library(flextable)
+library(magrittr)
+priority<-readxl::read_excel("Tables_from_NAP.xlsx", 
+    sheet = "priority_acts")
+t1<-flextable(priority,col_keys = names(priority),
+  cwidth = 3,
+  cheight = 0.01,
+  defaults = list(),
+   theme_booktabs())
+t2<-fontsize(t1,part = 'all', size = 8)
+t3<-border_outer(t2,part = 'all', border = NULL)
+t4<-border_inner(t3,part = 'all', border = NULL)
+t5<-bold(t4,part='header')
+t5
+```
+
+_Source: Adapted/updated from NAPA, NDC, other national strategies and the analysis in formulating this NAP_
+
+Other adaptation projects are proposed in the “Lesotho Water Security and Climate Change Assessment Report” (World Bank 2016):
+
+__Improve Data Monitoring and Management.__ Data limitations will undermine Lesotho’s ability to monitor predictions and respond to changes in climate. Design and implementation of an optimized hydrometeorological network would enhance the capacity of Lesotho to prepare for and respond to potential future changes in climate. Detailed agricultural data and information about the economic uses and value of water were not readily available. These limitations led to a more cursory evaluation of the agricultural sector and the omission of a more formal economic analysis.
+
+__Continued Capacity Enhancement.__ The tools and analysis required to support the planning for robust climate adaptation necessitate sustained capacity development. The nature of the analysis here provided support to the first iteration of an interactive participatory process. The time required to develop the tools and capacity needed provides a foundation, but should be further developed and integrated into government planning processes.
+
+__Economic Evaluation.__ The climate modelling and RDM framework illustrates important decision pathways for future development in Lesotho. The cost and valuation data required to support a cost-benefit analysis across the wide range of climate conditions would also support an important economic evaluation of different adaptation options. These data could be incorporated into the current RDM analysis to evaluate the economic robustness of the different adaptations.
+
+__Extending Adaptation Analysis.__ Using the existing data and tools to undertake additional iterations of the vulnerability and adaptation analysis up to the end of the 21st century would increase the scientific rigor. The analysis would enhance the capacity to evaluate climate risks and weigh different trade-offs. Further adaptation of the WEAP model to a shorter time step, such as one day, would enable the evaluation of operational strategies for water allocation among competing uses, such as water deliveries and timing for domestic and agricultural use, as well as hydropower generation. Extending the geographic scope of the model to demand areas in South Africa that rely on water imported from Lesotho would also produce a more complete understanding of vulnerabilities and trade-offs.
+
+__Lowlands Water Supply Scheme.__ Continued development of the LLWSS is critical to improving the reliability and resilience of the domestic and industrial sectors. Exploring interconnections between the developed water resources through LHWP and linking these to address domestic and industrial demands in the lowlands could help improve the resilience of the existing system. Such integrated planning could also help to manage the associated political economy between perceived national benefits and the development of water transfer projects.
+
+__Agriculture Sector Assessment.__ The results highlight the need for a more thorough assessment of the risks and opportunities for Lesotho’s agricultural sector of potential changes in climate. An evaluation of the implications of increasing atmospheric carbon dioxide (CO2) concentrations, together with rising temperatures and water stress on agricultural productivity, should be further elaborated. A better understanding of these dynamics could help develop agricultural strategies suited for the unique climatic changes under way in Lesotho. This information could help direct a program to incorporate the traits of such plans into desirable crop production cultivars to improve yield.
+
+

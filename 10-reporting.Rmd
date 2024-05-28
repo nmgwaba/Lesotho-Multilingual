@@ -1,0 +1,51 @@
+# Reporting
+
+##	Adaptation communications/NDCs
+
+All Parties are required to submit their NDCs every five years (e.g. 2020, 2025, 2030), regardless of their respective implementation time frames. Lesotho submitted its first NDC in December 2017 which is not synchronized with the reporting years given by UNFCCC. Lesotho, as a non-Annex I party, submitted its first national communications in 2000, and the second in 2013, so it is irregular with respect to its NDC submissions. The NAP process, on the other hand, is being developed for the first time. These three reports should be staggered, rather than submitted during the same year, so that they in essence feed into each other in a progressive manner and lessons learned can be integrated into the evolving NAP process, based on the guidelines in Table 9 below.
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning=FALSE)
+``` 
+
+```{r}
+library(flextable)
+library(magrittr)
+reporting<-readxl::read_excel("Tables_from_NAP.xlsx", 
+    sheet = "reporting")
+t1<-flextable(reporting,col_keys = names(reporting),
+  cwidth = 3,
+  cheight = 0.01,
+  defaults = list(),
+   theme_booktabs())
+t2<-fontsize(t1,part = 'all', size = 8)
+t3<-border_outer(t2,part = 'all', border = NULL)
+t4<-border_inner(t3,part = 'all', border = NULL)
+t5<-set_caption(t4, "Reporting, monitoring and review (NAP Stocktaking Report 2015).")
+t5
+```
+
+##	Links to SDG voluntary reporting and Sendai Framework Monitor
+
+It is reported in the UN SDG Knowledge Platform  that Lesotho has operationalized the SDG Agenda through its National Strategic Development Plan II (NSDP II) 2018/19 – 2022/23 which is also aligned to the AU Agenda 2063 and the Regional Indicative Strategic Development Plan. The SDG alignment is as follows (with the cross-cutting themes of environment and climate change, gender, vulnerability and marginalised groups):  
+
+*	Promoting inclusive and sustainable growth (All 17 SDG)
+*	Strengthening human capital (SDG 3, 4, 5, 10)
+*	Building enabling infrastructure (SDG 6, 7, 9, 11) and
+*	Strengthening governance and accountability (SDG 5, 16, 17)  
+
+The Lesotho Meteorological Services department, as the governmental focal point for the UNFCCC and pivot of the NAP process needs to liaise closely with the National Oversight Committee that steers the multi-level National Coordination Structure on Sustainable Development to ensure that adaptation objectives are in tandem with national development priorities. With regard to the Sendai Framework Monitor, Lesotho’s National Resilience Strategic Framework is well aligned and ensures comprehensive and sustainable climate and disaster risk management, resilience and early warning systems while incorporating national priority issues such as HIV/AIDS,	malnutrition, unemployment, severe land degradation and	poor agricultural production. The UN SDG Knowledge Platform notes that Lesotho selected 152 SDG indicators, with 34 customized for national monitoring and reporting and that it has established baselines for prioritised indicators, but that only 53% of the selected indicators had available data but are underpinned by disaggregation challenges.
+
+
+##	Gender
+
+According to the 2016 Population and Housing Census (PHC), the population of 2, 007, 201 is evenly distributed between women and men. Lesotho has made significant progress in terms of gender equality and ranks better on the Gender Inequality Index than on the Human Development Index (NAP Stocktaking Report 2015). With the introduction of quotas, there has been an increasing number and proportion of women in Parliament and Cabinet as well as in local councils. A notable recent achievement is the National Assembly Electoral Act 2011, which requires proportional representation lists of political parties (accounting for 40 out of the 120 Parliament seats) to have equal numbers of men and women candidates. Women participate in education more than men; however, women have long been disadvantaged by cultural traditions and there are still challenges ahead, notably to maintain levels of political participation, to facilitate their contribution to economic activities, and to improve maternal health and reduce maternal mortality (NAP Stocktaking Report 2015). 
+
+In order to promote gender equality and mainstreaming, NSDP II includes the following key strategic actions:  
+
+*	Strengthen institutional, policy and legislative frameworks to ensure effective mainstreaming of gender into national development programmes.
+*	Enhance economic empowerment of Basotho men through targeted vocational (artisan) and entrepreneurship training and business counselling, to be delivered at community level, and to include measures to combat stock theft and/or increased recovery.
+*	Enhance political empowerment of women through implementation of policies that will strengthen female participation in politics, including leadership training.
+*	Support non-formal education and skills development programmes for herd-boys and domestic workers.
+
+These strategic priorities on gender should be reflected in adaptation programme design.

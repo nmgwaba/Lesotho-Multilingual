@@ -1,0 +1,114 @@
+# Implementation strategy (including costs)
+
+##	Projects for implementation and guidelines
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning=FALSE)
+``` 
+
+```{r}
+library(flextable)
+library(magrittr)
+programs<-readxl::read_excel("Tables_from_NAP.xlsx", 
+    sheet = "existing_programs")
+t1<-flextable(programs,col_keys = names(programs),
+  cwidth = 3,
+  cheight = 0.01,
+  defaults = list(),
+   theme_booktabs())
+t2<-fontsize(t1,part = 'all', size = 8)
+t3<-border_outer(t2,part = 'all', border = NULL)
+t4<-border_inner(t3,part = 'all', border = NULL)
+t5<-bold(t4,part='header')
+t6<-set_caption(t5, "Existing country programmes for climate change adaptation")
+t6
+```
+
+
+A number of projects have been selected for implementation on the basis of national stakeholder consultations and government priorities (See Table 7 below). 
+
+
+```{r}
+library(flextable)
+library(magrittr)
+projects<-readxl::read_excel("Tables_from_NAP.xlsx", 
+    sheet = "project_examples")
+t1<-flextable(projects,col_keys = names(projects),
+  cwidth = 3,
+  cheight = 0.01,
+  defaults = list(),
+   theme_booktabs())
+t2<-fontsize(t1,part = 'all', size = 8)
+t3<-border_outer(t2,part = 'all', border = NULL)
+t4<-border_inner(t3,part = 'all', border = NULL)
+t5<-bold(t4,part='header')
+t6<-set_caption(t5, "Examples of projects and costs.   
+                \n Potential funding sources: Adaptation Fund, GEF/LDCF, GEF/SCCF, Donor fund, DFIs (AfDB, KfW, IFAD, IFC, IDA, set up PPPs with assistance of development partners)")
+t6
+```
+
+
+
+##	Promoting action by all actors and stakeholders: policy and capacity-development, outreach
+
+The NAP Stocktaking Report (2015) clearly outlines the key players and stakeholders as presented below. 
+
+__The Lesotho Meteorological Services department (LMS)__ is the Government’s focal point for the UNFCCC and is key to the NAP process. This is made clear in the draft Roadmap included in this report.
+
+The __Ministry of Tourism, Environment and Culture__ through its Department of  Environment is the GEF operational focal point that can guarantee cooperation with other GEF initiatives. 
+
+The __Department of Energy (DoE)__ of the Ministry of Energy and Meteorology is the national body responsible for the formulation and implementation of energy policy, legislation and activities in the energy sector at national, regional and local levels, in consultation with relevant stakeholders. Within DoE, the Division of Renewable Energy is the main government body involved in renewables in Lesotho. 
+
+The __Appropriate Technology Section__ of the Ministry of Communication, Science and Technology  is also involved in renewable energy to some extent. Three technical and vocational schools are the key players in the training-related components of renewable energy projects. The coordination between them is facilitated by the Technical Vocational Department of the Ministry of Education and Training.
+
+The __Forestry Division__ was established as part of the Ministry of Agriculture, Cooperatives and Marketing in 1987. The Division operated under the Department of Conservation, Forestry and Land Use Planning. In 1999 the Division was decentralized to operate in all 10 districts under District Agricultural Officers. The year 2003 saw the establishment of a new and fully accountable __Ministry of Forestry,  Land Reclamation and Soil Conservation which was later renamed Ministry of Forestry, Range and Soil Conservation.__ The Ministry has been mandated to take charge of forestry development activities across the country through tree-planting activities, gully rehabilitation, rangelands improvement and management, and harnessing of water. The Ministry operates in all 10 districts of the country through District Forestry, Range and Soil Conservation Offices.
+
+The __Office of the Commissioner of Water__, within the Ministry of Water, is mandated to promote coordination of programs and activities within the water sector. The Commissioner is responsible for the __Department of Water Affairs (DWA) and the Department of Rural Water Supply (DRWS)__. Additionally, the Commissioner overseas two parastatals: the Lesotho Highlands Development Authority, and the Water and Sewage Company (WASCO). The organization responsible for implementing the Water Act 1978 is the DWA within the Ministry of Water. The DWA is responsible for general administration of the water sector, as well as for policy formulation and data collection. The DRWS is mandated to supply water to rural communities in Lesotho, while WASCO manages water supply to urban areas.
+
+Numerous other government agencies and bodies outside the formal structures of government are potentially influential in the creation of responses to the challenges of climate change. Examples include the Ministry of Agriculture and Food Security, Ministry of Foreign Affairs, and the Ministry of Education and Training. 
+
+Their role emerged during the NAP workshop and the relationships between many of these were explored in the process of creating “stakeholder maps”. The images that emerged from these exercises are included in the workshop report and a sample of the outputs is included here to illustrate the notions of:  
+
+*	primary stakeholder;
+*	veto players; and
+*	secondary stakeholder.
+ 
+The inter-sectoral coordination mechanism is represented by the __National Committee on Climate Change (NCCC)__. The contribution that this agency will make in taking forward the process of NAP is made clear in the Roadmap.
+
+
+##	Addressing vulnerabilities and risks in key systems and sectors
+
+The vulnerabilities and risks in key systems and sectors have been presented in sections 6 and 7 of this report. The approach to addressing these were discussed during the 2015 workshop and are outlined in Table 8 below. Potential projects and costs should be to the extent possible aligned with the GCF country programme and other relevant climate finance mechanisms (international and domestic) and implementing partners as well as take into account technology and capacity building.
+
+
+```{r}
+library(flextable)
+library(magrittr)
+elementA<-readxl::read_excel("Tables_from_NAP.xlsx", 
+    sheet = "stocktaking")
+t1<-flextable(elementA,col_keys = names(elementA),
+  cwidth = 3,
+  cheight = 0.01,
+  defaults = list(),
+   theme_booktabs())
+t2<-fontsize(t1,part = 'all', size = 8)
+t3<-border_outer(t2,part = 'all', border = NULL)
+t4<-border_inner(t3,part = 'all', border = NULL)
+t5<-set_caption(t4, "Addressing vulnerability and risks in key sectors/systems (NAP Stocktaking Report 2015).")
+t5
+```
+
+
+
+##	Better informed decision-making: climate information services, early warning, science and technology, decision-support modelling, research
+
+Essential cross-cutting projects/programmes would include:  
+
+*	Creating an effective adaptation process and system (mainstreaming/integration, policies, governance, etc.)
+*	Climate information services and early warnings systems, systematic observations
+*	Build capacity to model and analyse high-resolution future climate change scenarios at national and sub-national scales
+*	Active monitoring of key systems: crop production, water resources, ecosystems, etc.
+*	M&E system – individual projects and in aggregate for the country
+*	Capacity development for implementation of adaptation and support to the process including data and information management, etc.
+*	Establishment of an open, shared and accessible integrated database system with appropriate indicators per system to support periodic vulnerability assessments and progress in adaptation planning and implementation.
+
